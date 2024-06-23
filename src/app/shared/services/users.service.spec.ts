@@ -5,16 +5,20 @@ import { UtilsService } from "./utils.service";
 
 describe('Name of the group', () => {
   let usersService: UsersService;
-  const utilsServiceMock = {
-    pluck: jest.fn(),
-  }
+  let utilsService: UtilsService;
+  // const utilsServiceMock = {
+  //   pluck: jest.fn(),
+  // }
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [UsersService,{provide: UtilsService, useValue: utilsServiceMock}]
+      providers: [UsersService, UtilsService
+        // {provide: UtilsService, useValue: utilsServiceMock}
+      ]
     })
 
     usersService = TestBed.inject(UsersService);
+    utilsService = TestBed.inject(UtilsService);
   });
 
   it('creates a service', () => {
@@ -46,8 +50,16 @@ describe('Name of the group', () => {
 
   describe('getUsernames', () => {
     it('should get usernames', () => {
-      utilsServiceMock.pluck.mockReturnValue(['foo']);
-      expect(usersService.getUsernames()).toEqual(['foo']);  
+      jest.spyOn(utilsService, 'pluck');
+      usersService.users = [{id: '3', name: 'Jozef'}];
+      usersService.getUsernames();
+      expect(utilsService.pluck).toHaveBeenCalledWith(
+        usersService.users,
+        'name'
+      );  
+
+      // utilsServiceMock.pluck.mockReturnValue(['foo']);
+      // expect(usersService.getUsernames()).toEqual(['foo']);  
     });
   });
 });
